@@ -39,7 +39,7 @@ const createUser = (req, res) => {
 const updateUser = (req, res) => {
   User.findByIdAndUpdate(req.user._id, req.body, {new: true})// eslint-disable-line
     .then((user) => {
-      res.status(201).send(user);
+      res.status(200).send(user);
     })
     .catch((err) => {
       if (err instanceof mongoose.Error.ValidationError) {
@@ -52,7 +52,7 @@ const updateUser = (req, res) => {
 const updateAvatar = (req, res) => {
   User.findByIdAndUpdate(req.user._id, req.body, {new: true})// eslint-disable-line
     .then((user) => {
-      res.status(201).send(user);
+      res.status(200).send(user);
     })
     .catch((err) => {
       if (err instanceof mongoose.Error.ValidationError) {

@@ -44,7 +44,7 @@ const likeCard = (req, res) => {
     { new: true },
   ).orFail(new Error('NotFound'))
     .then((card) => {
-      res.status(201).send(card);
+      res.status(200).send(card);
     })
     .catch((err) => {
       if (err.message === 'NotFound') {
@@ -64,7 +64,7 @@ const dislikeCard = (req, res) => {
     { new: true },
   ).orFail(new Error('NotFound'))
     .then((card) => {
-      res.status(201).send(card);
+      res.status(200).send(card);
     })
     .catch((err) => {
       if (err.message === 'NotFound') {
