@@ -1,6 +1,8 @@
 const express = require('express');
 const mongoose = require('mongoose');
 
+const notFoundController = require('./controllers/notFoundController');
+
 const { PORT = 3000 } = process.env;
 const app = express();
 
@@ -16,6 +18,8 @@ app.use((req, res, next) => {
 
 app.use(require('./routes/users'));
 app.use(require('./routes/cards'));
+
+app.use('*', notFoundController);
 
 app.listen(PORT, () => {
 });
