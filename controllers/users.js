@@ -37,7 +37,7 @@ const createUser = (req, res) => {
 };
 
 const updateUser = (req, res) => {
-  User.findByIdAndUpdate(req.user._id, req.body, {new: true})// eslint-disable-line
+  User.findByIdAndUpdate(req.user._id, req.body, {new: true, runValidators: true})// eslint-disable-line
     .then((user) => {
       res.status(200).send(user);
     })
@@ -50,7 +50,7 @@ const updateUser = (req, res) => {
 };
 
 const updateAvatar = (req, res) => {
-  User.findByIdAndUpdate(req.user._id, req.body, {new: true})// eslint-disable-line
+  User.findByIdAndUpdate(req.user._id, req.body, {new: true, runValidators: true})// eslint-disable-line
     .then((user) => {
       res.status(200).send(user);
     })
