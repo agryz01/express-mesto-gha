@@ -36,4 +36,36 @@ const createUser = (req, res) => {
     });
 };
 
-module.exports = { createUser, getUsers, getUserById };
+const updateUser = (req, res) => {
+  User.findByIdAndUpdate(req.user._id, req.body, {new: true})// eslint-disable-line
+    .then((user) => {
+      res.status(201).send(user);
+    })
+    .catch((err) => {
+      if (err instanceof mongoose.Error.ValidationError) {
+        return res.status(400).send({ message: 'Ошибка валидации', err });
+      }
+      return res.status(500).send({ message: 'Произошла ошибка', err });
+    });
+};
+
+const updateAvatar = (req, res) => {
+  User.findByIdAndUpdate(req.user._id, req.body, {new: true})// eslint-disable-line
+    .then((user) => {
+      res.status(201).send(user);
+    })
+    .catch((err) => {
+      if (err instanceof mongoose.Error.ValidationError) {
+        return res.status(400).send({ message: 'Ошибка валидации', err });
+      }
+      return res.status(500).send({ message: 'Произошла ошибка', err });
+    });
+};
+
+module.exports = {
+  createUser,
+  getUsers,
+  getUserById,
+  updateUser,
+  updateAvatar,
+};
