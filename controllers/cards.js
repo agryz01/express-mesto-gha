@@ -6,7 +6,7 @@ const getCards = (req, res) => {
   Card.find({})
     .then((card) => res.send(card))
     .catch(() => {
-      res.status(statusCode.NTERNAL_SERVER_ERROR).send({ message: 'Произошла ошибка' });
+      res.status(statusCode.INTERNAL_SERVER_ERROR).send({ message: 'Произошла ошибка' });
     });
 };
 
@@ -20,7 +20,7 @@ const deletCard = (req, res) => {
       if (err instanceof mongoose.Error.CastError) {
         return res.status(statusCode.BAD_REQUEST).send({ message: 'Указан не корректный _id' });
       }
-      return res.status(statusCode.NTERNAL_SERVER_ERROR).send({ message: 'Произошла ошибка' });
+      return res.status(statusCode.INTERNAL_SERVER_ERROR).send({ message: 'Произошла ошибка' });
     });
 };
 
@@ -32,7 +32,7 @@ const createCard = (req, res) => {
       if (err instanceof mongoose.Error.ValidationError) {
         return res.status(statusCode.BAD_REQUEST).send({ message: 'Ошибка валидации' });
       }
-      return res.status(statusCode.NTERNAL_SERVER_ERROR).send({ message: 'Произошла ошибка' });
+      return res.status(statusCode.INTERNAL_SERVER_ERROR).send({ message: 'Произошла ошибка' });
     });
 };
 
@@ -50,7 +50,7 @@ const likeCard = (req, res) => {
       if (err instanceof mongoose.Error.CastError) {
         return res.status(statusCode.BAD_REQUEST).send({ message: 'Указан не корректный _id' });
       }
-      return res.status(statusCode.NTERNAL_SERVER_ERROR).send({ message: 'Произошла ошибка' });
+      return res.status(statusCode.INTERNAL_SERVER_ERROR).send({ message: 'Произошла ошибка' });
     });
 };
 
@@ -68,7 +68,7 @@ const dislikeCard = (req, res) => {
       if (err instanceof mongoose.Error.CastError) {
         return res.status(statusCode.BAD_REQUEST).send({ message: 'Указан не корректный _id' });
       }
-      return res.status(statusCode.NTERNAL_SERVER_ERROR).send({ message: 'Произошла ошибка' });
+      return res.status(statusCode.INTERNAL_SERVER_ERROR).send({ message: 'Произошла ошибка' });
     });
 };
 

@@ -1,5 +1,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
+const { createUser, login } = require('./controllers/users');
+const auth = require('./middlewares/auth');
 
 const notFoundController = require('./controllers/notFoundController');
 
@@ -9,12 +11,11 @@ const app = express();
 mongoose.connect('mongodb://localhost:27017/mestodb');
 
 app.use(express.json());
-app.use((req, res, next) => {
-  req.user = {
-    _id: '635958bb4042f790a68525c8',
-  };
-  next();
-});
+
+app.post('/signin', login);
+app.post('/signup', createUser);
+
+app.use(auth);
 
 app.use('/users', require('./routes/users'));
 app.use('/cards', require('./routes/cards'));
