@@ -2,6 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const { createUser, login } = require('./controllers/users');
 const auth = require('./middlewares/auth');
+const { handlerErrors } = require('./middlewares/handlerErrors');
 
 const notFoundController = require('./controllers/notFoundController');
 
@@ -21,6 +22,8 @@ app.use('/users', require('./routes/users'));
 app.use('/cards', require('./routes/cards'));
 
 app.use('*', notFoundController);
+
+app.use(handlerErrors);
 
 app.listen(PORT, () => {
 });

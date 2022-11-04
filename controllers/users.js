@@ -2,31 +2,30 @@ const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/user');
-const { statusCode } = require('../utils/statusCode');
 
-const getUsers = (req, res) => {
+const BadRequestErr = require('../errors/BadRequestErr');
+const ConflictErr = require('../errors/ConflictErr');
+const NotFoundErr = require('../errors/NotFoundErr');
+
+const getUsers = (req, res, next) => {
   User.find({})
     .then((user) => res.send(user))
-    .catch(() => {
-      res.status(statusCode.INTERNAL_SERVER_ERROR).send({ message: 'Произошла ошибка' });
-    });
+    .catch(next);
 };
 
-const getUserById = (req, res) => {
-  User.findById(req.params.userId).orFail(new Error('NotFound'))
+const getUserById = (req, res, next) => {
+  User.findById(req.params.userId).orFail(new NotFoundErr('Пользователь с указанным _id не найден'))
     .then((user) => res.send(user))
     .catch((err) => {
-      if (err.message === 'NotFound') {
-        return res.status(statusCode.NOT_FOUND).send({ message: 'Пользователь с указанным _id не найден' });
-      }
       if (err instanceof mongoose.Error.CastError) {
-        return res.status(statusCode.BAD_REQUEST).send({ message: 'Указан не корректный _id' });
+        next(new BadRequestErr('Указан не корректный _id'));
+        return;
       }
-      return res.status(statusCode.INTERNAL_SERVER_ERROR).send({ message: 'Произошла ошибка' });
+      next(err);
     });
 };
 
-const createUser = (req, res) => {
+const createUser = (req, res, next) => {
   bcrypt.hash(req.body.password, 10)
     .then((hash) => User.create({
       email: req.body.email,
@@ -35,51 +34,55 @@ const createUser = (req, res) => {
     .then((user) => res.send(user))
     .catch((err) => {
       if (err instanceof mongoose.Error.ValidationError) {
-        return res.status(statusCode.BAD_REQUEST).send({ message: 'Ошибка валидации' });
+        next(new BadRequestErr('Ошибка валидации'));
+        return;
       }
-      return res.status(statusCode.INTERNAL_SERVER_ERROR).send({ message: 'Произошла ошибка' });
+      if (err.code === 11000) {
+        next(new ConflictErr('Пользователь с таким email уже существует'));
+        return;
+      }
+      next(err);
     });
 };
 
-const updateUser = (req, res) => {
+const updateUser = (req, res, next) => {
   User.findByIdAndUpdate(req.user._id, req.body, { new: true, runValidators: true })
     .then((user) => res.send(user))
     .catch((err) => {
       if (err instanceof mongoose.Error.ValidationError) {
-        return res.status(statusCode.BAD_REQUEST).send({ message: 'Ошибка валидации' });
+        next(new BadRequestErr('Ошибка валидации'));
+        return;
       }
-      return res.status(statusCode.INTERNAL_SERVER_ERROR).send({ message: 'Произошла ошибка' });
+      next(err);
     });
 };
 
-const updateAvatar = (req, res) => {
+const updateAvatar = (req, res, next) => {
   User.findByIdAndUpdate(req.user._id, req.body, { new: true, runValidators: true })
     .then((user) => res.send(user))
     .catch((err) => {
       if (err instanceof mongoose.Error.ValidationError) {
-        return res.status(statusCode.BAD_REQUEST).send({ message: 'Ошибка валидации' });
+        next(new BadRequestErr('Ошибка валидации'));
+        return;
       }
-      return res.status(statusCode.INTERNAL_SERVER_ERROR).send({ message: 'Произошла ошибка' });
+      next(err);
     });
 };
 
-const login = (req, res) => {
-  const { email, password } = req.body; return User.findUserByCredentials(email, password)
+const login = (req, res, next) => {
+  const { email, password } = req.body;
+  return User.findUserByCredentials(email, password)
     .then((user) => {
-      const token = jwt.sign({ _id: user._id }, 'some-secret-key', { expiresIn: '7d' });
+      const token = jwt.sign({ _id: user._id }, 'q@mDl|{rW|7K', { expiresIn: '7d' });
       res.send({ token });
     })
-    .catch((err) => {
-      res.status(statusCode.INTERNAL_SERVER_ERROR).send({ message: err.message });
-    });
+    .catch(next);
 };
 
-const getUserMe = (req, res) => {
-  User.findById(req.user._id, req.body)
+const getUserMe = (req, res, next) => {
+  User.findById(req.user._id, req.body).select('+password')
     .then((user) => res.send(user))
-    .catch(() => {
-      res.status(statusCode.INTERNAL_SERVER_ERROR).send({ message: 'Произошла ошибка' });
-    });
+    .catch(next);
 };
 
 module.exports = {
