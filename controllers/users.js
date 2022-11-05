@@ -89,7 +89,7 @@ const login = (req, res, next) => {
 };
 
 const getUserMe = (req, res, next) => {
-  User.findById(req.user._id, req.body).select('+password')
+  User.findById(req.user._id, req.body)
     .then((user) => res.send(user))
     .catch(next);
 };

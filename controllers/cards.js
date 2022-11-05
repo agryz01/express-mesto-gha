@@ -3,6 +3,7 @@ const Card = require('../models/card');
 
 const BadRequestErr = require('../errors/BadRequestErr');
 const NotFoundErr = require('../errors/NotFoundErr');
+const ForbiddenErr = require('../errors/ForbiddenErr');
 
 const getCards = (req, res, next) => {
   Card.find({})
@@ -17,7 +18,7 @@ const deletCard = (req, res, next) => {
         card.delete();
         return res.send({ message: 'карточка удалена' });
       }
-      throw new BadRequestErr('Вы не можете удалить карточку другого пользователя');
+      throw new ForbiddenErr('Вы не можете удалить карточку другого пользователя');
     })
     .catch((err) => {
       if (err instanceof mongoose.Error.CastError) {
