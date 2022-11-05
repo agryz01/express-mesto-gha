@@ -27,11 +27,15 @@ const getUserById = (req, res, next) => {
 
 const createUser = (req, res, next) => {
   bcrypt.hash(req.body.password, 10)
-    .then((hash) => User.create({
-      email: req.body.email,
-      password: hash,
-    }))
-    .then((user) => res.send(user))
+    .then((hash) => User.create({ ...req.body, password: hash }))
+    .then((user) => {
+      const {
+        name, about, avatar, _id,
+      } = user;
+      res.send({
+        name, about, avatar, _id,
+      });
+    })
     .catch((err) => {
       if (err instanceof mongoose.Error.ValidationError) {
         next(new BadRequestErr('Ошибка валидации'));
@@ -74,12 +78,12 @@ const login = (req, res, next) => {
   return User.findUserByCredentials(email, password)
     .then((user) => {
       const token = jwt.sign({ _id: user._id }, 'q@mDl|{rW|7K', { expiresIn: '7d' });
-      res.cookie('jwt', token, {
-        maxAge: 3600000 * 24 * 7,
-        httpOnly: true,
-      })
-        .end();
-      // res.send({ token });
+      // res.cookie('jwt', token, {
+      //   maxAge: 3600000 * 24 * 7,
+      //   httpOnly: true,
+      // })
+      //   .end();
+      res.send({ token });
     })
     .catch(next);
 };
