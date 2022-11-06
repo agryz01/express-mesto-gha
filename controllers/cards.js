@@ -23,6 +23,7 @@ const deletCard = (req, res, next) => {
     .catch((err) => {
       if (err instanceof mongoose.Error.CastError) {
         next(new BadRequestErr('Указан не корректный _id'));
+        return;
       }
       next(err);
     });
@@ -51,6 +52,7 @@ const likeCard = (req, res, next) => {
     .catch((err) => {
       if (err instanceof mongoose.Error.CastError) {
         next(new BadRequestErr('Указан не корректный _id'));
+        return;
       }
       next(err);
     });
@@ -66,6 +68,7 @@ const dislikeCard = (req, res, next) => {
     .catch((err) => {
       if (err instanceof mongoose.Error.CastError) {
         next(new BadRequestErr('Указан не корректный _id'));
+        return;
       }
       next(err);
     });
