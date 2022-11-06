@@ -18,7 +18,8 @@ const deletCard = (req, res, next) => {
         card.delete()
           .then(() => {
             res.send({ message: 'карточка удалена' });
-          });
+          })
+          .catch(next);
         return;
       }
       throw new ForbiddenErr('Вы не можете удалить карточку другого пользователя');
