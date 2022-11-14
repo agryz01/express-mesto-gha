@@ -5,6 +5,7 @@ const { createUser, login } = require('./controllers/users');
 const auth = require('./middlewares/auth');
 const { handlerErrors } = require('./middlewares/handlerErrors');
 const { url } = require('./utils/regExp');
+const { requestLogger, errorLogger } = require('./middlewares/logger');
 
 const notFoundController = require('./controllers/notFoundController');
 
@@ -14,6 +15,8 @@ const app = express();
 mongoose.connect('mongodb://localhost:27017/mestodb');
 
 app.use(express.json());
+
+app.use(requestLogger);
 
 app.post('/signin', celebrate({
   body: Joi.object().keys({
@@ -37,6 +40,8 @@ app.use('/users', require('./routes/users'));
 app.use('/cards', require('./routes/cards'));
 
 app.use('*', notFoundController);
+
+app.use(errorLogger);
 
 app.use(errors());
 app.use(handlerErrors);
